@@ -3,103 +3,101 @@ using namespace std;
 
 int main()
 {
-    int frame, n;
-    int page[100], frameArr[100];
+    int frame,n,i,j,k;
+    int page[100],frameArr[100];
+    int pagehit=0,pagemiss=0,count=0;
 
-    cout << "Enter number of frame : ";
-    cin >> frame;
+    cout<<"Enter number of frame :";
+    cin>>frame;
 
-    cout << "Enter number of page : ";
-    cin >> n;
+    cout<<"\nEnter number of page :";
+    cin>>n;
 
-    cout << "Enter reference string : ";
-    for(int i = 0; i < n; i++)
+    cout<<"\nEnter reference string :";
+    for(i=0;i<n;i++)
     {
-        cin >> page[i];
+        cin>>page[i];
     }
 
-    for(int i = 0; i < frame; i++)
+    cout << "\nPage\tFrames\n";
+
+    for(i=0;i<n;i++)
     {
-        frameArr[i] = -1;
-    }
+        bool hit=false;
 
-    int pageHit = 0;
-    int pageMiss = 0;
-
-    for(int i = 0; i < n; i++)
-    {
-        bool found = false;
-
-        // Check page hit
-        for(int j = 0; j < frame; j++)
+        // Check Page Hit
+        for(j=0;j<count;j++)
         {
-            if(frameArr[j] == page[i])
+            if(frameArr[j]==page[i])
             {
-                found = true;
-                pageHit++;
+                hit=true;
                 break;
             }
         }
 
-        // If page miss
-        if(found == false)
+        if(hit)
         {
-            pageMiss++;
+            pagehit++;
+        }
 
-            int replaceIndex = -1;
+        else
+        {
+            pagemiss++;
 
-            // Find empty frame
-            for(int j = 0; j < frame; j++)
+            // Empty frame available
+            if(count<frame)
             {
-                if(frameArr[j] == -1)
-                {
-                    replaceIndex = j;
-                    break;
-                }
+                frameArr[count]=page[i];
+                count++;
             }
 
-            // If no empty frame
-            if(replaceIndex == -1)
+            // All frames are full
+            else
             {
-                int farthest = -1;
+                int replaceIndex=0;
+                int farthest=-1;
 
-                for(int j = 0; j < frame; j++)
+                for(j=0;j<frame;j++)
                 {
-                    int k;
+                    int nextUse=n;
 
-                    for(k = i + 1; k < n; k++)
+                    // Find next use of current frame page
+                    for(k=i+1;k<n;k++)
                     {
-                        if(frameArr[j] == page[k])
+                        if(frameArr[j]==page[k])
                         {
+                            nextUse=k;
                             break;
                         }
                     }
 
-                    if(k > farthest)
+                    // Find page used farthest in future
+                    if(nextUse>farthest)
                     {
-                        farthest = k;
-                        replaceIndex = j;
+                        farthest=nextUse;
+                        replaceIndex=j;
                     }
                 }
+
+                frameArr[replaceIndex]=page[i];
             }
-
-            frameArr[replaceIndex] = page[i];
         }
 
-        // Display frames
-        cout << "\nPage " << page[i] << " : ";
+        // Display current page and frames
+        cout<<page[i]<<"\t";
 
-        for(int j = 0; j < frame; j++)
+        for(k=0;k<count;k++)
         {
-            if(frameArr[j] == -1)
-                cout << "- ";
-            else
-                cout << frameArr[j] << " ";
+            cout<<frameArr[k]<<" ";
         }
+
+        cout<<(hit ? "Hit":"Miss")<<"\n";
     }
 
-    cout << "\n\nTotal Page Hit  = " << pageHit;
-    cout << "\nTotal Page Miss = " << pageMiss;
+    cout << "\nTotal Page Hits: " << pagehit << "\n";
+    cout << "Total Page Misses: " << pagemiss << "\n";
+    cout << "Hit Ratio: " << (float)pagehit / n << "\n";
+    cout << "Miss Ratio: " << (float)pagemiss / n << "\n";
 
     return 0;
 }
