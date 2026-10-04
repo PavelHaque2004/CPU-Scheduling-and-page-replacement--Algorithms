@@ -1,3 +1,4 @@
+```cpp
 #include<iostream>
 using namespace std;
 
@@ -26,7 +27,15 @@ int main()
 
     int time = 0;
     int completed = 0;
+    int totalBT = 0;
+
     float T_WT = 0;
+
+    // Calculate Total Burst Time
+    for(i = 0; i < n; i++)
+    {
+        totalBT = totalBT + BT[i];
+    }
 
     cout << "\nGantt Chart:\n";
 
@@ -89,5 +98,19 @@ int main()
     cout << "\nAverage Waiting Time = "
          << T_WT / n << endl;
 
+    // Throughput
+    float throughput = (float)n / time;
+
+    cout << "Throughput = "
+         << throughput
+         << " process/unit time" << endl;
+
+    // CPU Utilization
+    float utilization = ((float)totalBT / time) * 100;
+
+    cout << "CPU Utilization = "
+         << utilization << "%" << endl;
+
     return 0;
 }
+```
