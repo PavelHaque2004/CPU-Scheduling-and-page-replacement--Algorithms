@@ -1,4 +1,4 @@
-
+```cpp
 #include <iostream>
 using namespace std;
 
@@ -9,8 +9,10 @@ int main()
     cout << "Enter number of process: ";
     cin >> n;
 
-    int pid[100], AT[100], BT[100], CT[100], TAT[100], WT[100];
+    int pid[100], AT[100], BT[100];
+    int CT[100], TAT[100], WT[100], RT[100];
 
+    // Input
     for(i = 0; i < n; i++)
     {
         pid[i] = i + 1;
@@ -38,40 +40,50 @@ int main()
 
     int time = 0;
     int totalBT = 0;
+
     float T_WT = 0;
     float T_TAT = 0;
+    float T_RT = 0;
 
     cout << "\nGantt Chart: ";
 
+    // FCFS Scheduling
     for(i = 0; i < n; i++)
     {
-        // If CPU is idle
+        // CPU Idle
         if(time < AT[i])
         {
             time = AT[i];
         }
 
+        // First time CPU gets the process
+        RT[i] = time - AT[i];
+
         // Completion Time
         time = time + BT[i];
         CT[i] = time;
 
-        // Turnaround Time = CT - AT
+        // Turnaround Time
         TAT[i] = CT[i] - AT[i];
 
-        // Waiting Time = TAT - BT
+        // Waiting Time
         WT[i] = TAT[i] - BT[i];
 
+        // Total Burst Time
         totalBT = totalBT + BT[i];
 
+        // Total values
         T_WT = T_WT + WT[i];
         T_TAT = T_TAT + TAT[i];
+        T_RT = T_RT + RT[i];
 
         cout << "| P" << pid[i] << " ";
     }
 
     cout << "|\n";
 
-    cout << "\nProcess\tAT\tBT\tCT\tTAT\tWT\n";
+    // Table
+    cout << "\nProcess\tAT\tBT\tCT\tTAT\tWT\tRT\n";
 
     for(i = 0; i < n; i++)
     {
@@ -80,10 +92,11 @@ int main()
              << "\t" << BT[i]
              << "\t" << CT[i]
              << "\t" << TAT[i]
-             << "\t" << WT[i] << "\n";
+             << "\t" << WT[i]
+             << "\t" << RT[i] << "\n";
     }
 
-    // Total time = Last Completion Time - First Arrival Time
+    // Total Time
     int totalTime = CT[n - 1] - AT[0];
 
     // Average Waiting Time
@@ -93,6 +106,10 @@ int main()
     // Average Turnaround Time
     cout << "Average Turnaround Time = "
          << T_TAT / n << endl;
+
+    // Average Response Time
+    cout << "Average Response Time = "
+         << T_RT / n << endl;
 
     // Throughput
     float throughput = (float)n / totalTime;
@@ -106,6 +123,12 @@ int main()
     cout << "CPU Utilization = "
          << utilization << "%" << endl;
 
+    // Efficiency
+    float efficiency = ((float)totalBT / totalTime) * 100;
+
+    cout << "Efficiency = "
+         << efficiency << "%" << endl;
+
     return 0;
 }
-
+```
