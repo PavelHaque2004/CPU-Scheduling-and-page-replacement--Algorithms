@@ -1,103 +1,121 @@
-#include<iostream>
+#include <iostream>
 using namespace std;
 
 int main()
 {
-    int frame,n,i,j,k;
-    int page[100],frameArr[100];
-    int pagehit=0,pagemiss=0,count=0;
+    int frames, n;
 
-    cout<<"Enter number of frame :";
-    cin>>frame;
+    cout << "Enter number of frames: ";
+    cin >> frames;
 
-    cout<<"\nEnter number of page :";
-    cin>>n;
+    cout << "Enter number of pages: ";
+    cin >> n;
 
-    cout<<"\nEnter reference string :";
-    for(i=0;i<n;i++)
+    
+    int pages[100];
+    int framesArr[100];
+    int recent[100];
+
+    cout << "Enter page references: ";
+    for (int i = 0; i < n; i++)
     {
-        cin>>page[i];
+        cin >> pages[i];
     }
 
-    cout << "\nPage\tFrames\n";
+    int count = 0;
+    int pageHits = 0;
+    int pageMisses = 0;
 
-    for(i=0;i<n;i++)
+    cout << "\nPage\tFrames\t\tStatus\n";
+    cout << "--------------------------------\n";
+
+    // Process each page
+    for (int i = 0; i < n; i++)
     {
-        bool hit=false;
+        bool hit = false;
+        int hitIndex = -1;
 
-        // Check Page Hit
-        for(j=0;j<count;j++)
+        // Check whether page is already in frame
+        for (int j = 0; j < count; j++)
         {
-            if(frameArr[j]==page[i])
+            if (framesArr[j] == pages[i])
             {
-                hit=true;
+                hit = true;
+                hitIndex = j;
                 break;
             }
         }
 
-        if(hit)
+        // If page is found
+        if (hit)
         {
-            pagehit++;
+            pageHits++;
+
+            // Update recent use time
+            recent[hitIndex] = i;
         }
 
+        // If page is not found
         else
         {
-            pagemiss++;
+            pageMisses++;
 
-            // Empty frame available
-            if(count<frame)
+            // If there is an empty frame
+            if (count < frames)
             {
-                frameArr[count]=page[i];
+                framesArr[count] = pages[i];
+                recent[count] = i;
                 count++;
             }
 
-            // All frames are full
+            // If all frames are full
             else
             {
-                int replaceIndex=0;
-                int farthest=-1;
+                int lruIndex = 0;
+                int minRecent = recent[0];
 
-                for(j=0;j<frame;j++)
+                // Find Least Recently Used page
+                for (int k = 1; k < frames; k++)
                 {
-                    int nextUse=n;
-
-                    // Find next use of current frame page
-                    for(k=i+1;k<n;k++)
+                    if (recent[k] < minRecent)
                     {
-                        if(frameArr[j]==page[k])
-                        {
-                            nextUse=k;
-                            break;
-                        }
-                    }
-
-                    // Find page used farthest in future
-                    if(nextUse>farthest)
-                    {
-                        farthest=nextUse;
-                        replaceIndex=j;
+                        minRecent = recent[k];
+                        lruIndex = k;
                     }
                 }
 
-                frameArr[replaceIndex]=page[i];
+                // Replace LRU page
+                framesArr[lruIndex] = pages[i];
+                recent[lruIndex] = i;
             }
         }
 
         // Display current page and frames
-        cout<<page[i]<<"\t";
+        cout << pages[i] << "\t";
 
-        for(k=0;k<count;k++)
+        for (int k = 0; k < count; k++)
         {
-            cout<<frameArr[k]<<" ";
+            cout << framesArr[k] << " ";
         }
 
-        cout<<(hit ? "Hit":"Miss")<<"\n";
+        if (hit)
+            cout << "\tHit";
+        else
+            cout << "\tMiss";
+
+        cout << endl;
     }
 
-    cout << "\nTotal Page Hits: " << pagehit << "\n";
-    cout << "Total Page Misses: " << pagemiss << "\n";
-    cout << "Hit Ratio: " << (float)pagehit / n << "\n";
-    cout << "Miss Ratio: " << (float)pagemiss / n << "\n";
+    // Display final result
+    cout << "\n--------------------------------\n";
+    cout << "Total Page Hits   : " << pageHits << endl;
+    cout << "Total Page Misses : " << pageMisses << endl;
+
+    cout << "Hit Ratio         : "
+         << (float)pageHits / n << endl;
+
+    cout << "Miss Ratio        : "
+         << (float)pageMisses / n << endl;
 
     return 0;
 }
