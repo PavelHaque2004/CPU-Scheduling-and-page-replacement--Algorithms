@@ -28,7 +28,16 @@ int main()
 
     int time = 0;
     int completed = 0;
+    int totalBT = 0;
+
     float T_WT = 0;
+    float T_TAT = 0;
+
+    // Total Burst Time
+    for(i = 0; i < n; i++)
+    {
+        totalBT = totalBT + BT[i];
+    }
 
     // Ready Queue
     int queue[1000];
@@ -110,6 +119,7 @@ int main()
             WT[index] = TAT[index] - BT[index];
 
             T_WT += WT[index];
+            T_TAT += TAT[index];
 
             inqueue[index] = false;
         }
@@ -139,6 +149,27 @@ int main()
 
     cout << "\nAverage Waiting Time = "
          << T_WT / n << endl;
+
+    cout << "Average Turnaround Time = "
+         << T_TAT / n << endl;
+
+    // Throughput
+    float throughput = (float)n / time;
+
+    cout << "Throughput = "
+         << throughput << " process/unit time" << endl;
+
+    // CPU Utilization
+    float utilization = ((float)totalBT / time) * 100;
+
+    cout << "CPU Utilization = "
+         << utilization << "%" << endl;
+
+    // Efficiency
+    float efficiency = ((float)totalBT / time) * 100;
+
+    cout << "Efficiency = "
+         << efficiency << "%" << endl;
 
     return 0;
 }
